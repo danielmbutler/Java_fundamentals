@@ -5,56 +5,87 @@ import java.util.Scanner;
 
 public class Main {
 
+    final static byte MONTHS_IN_YEAR = 12;
+    final static byte PERCENT = 100;
+
     public static void main(String[] args) {
-        final byte MONTHS_IN_YEAR = 12;
-        final byte PERCENT = 100;
-        //Scanner to collect values
-        Scanner scanner = new Scanner(System.in);
-        //currency Instance
-        NumberFormat currency = NumberFormat.getCurrencyInstance();
 
-        //logic
 
-        //principal
-        System.out.print("Principle (£1k - £1m) : ");
-        int principle = scanner.nextInt();
-        // condition
-        while (!(principle >= 1000 && principle <= 1_000_000)){
-            System.out.println("Enter a number between 1000 and 1,000,000");
-            System.out.print("Principle: ");
-            principle = scanner.nextInt();
-        }
+        // validate and calculate mortgage values
+        int principle = (int) readNumber("Principle (£1k - £1m) : ",1000, 1_000_000);
+        float annualRate =  (float) readNumber("Annual Interest Rate: ", 1, 30);
+        int totalPayments = (int) readNumber("Period (Years) : ", 1, 30);
+        // calculate mortgage
+        calculateMortgage(principle,annualRate,totalPayments);
 
-        //rate
-        System.out.print("Rate: ");
-        float rate = scanner.nextFloat();
-        // condition
-        while (!(rate > 0 && rate <= 30)){
-            System.out.println("Enter a value greater than 1 but less than 30");
-            System.out.print("Rate: ");
-            rate = scanner.nextFloat();
-        }
+    }
 
-        //period
-        System.out.print("Period (Years) : ");
-        int period = scanner.nextInt();
-        // condition
-        while (!(period > 1 && period <= 30)){
-            System.out.println("Enter a value greater than 1 but less than 30");
-            System.out.print("Period (Years) : ");
-            period = scanner.nextInt();
-        }
+    // workout result https://www.wikihow.com/Calculate-Mortgage-Payments
+    private static void calculateMortgage(
+            int principle,
+            float annulInterest,
+            int years) {
 
-        // workout result https://www.wikihow.com/Calculate-Mortgage-Payments
-        float monthIR = (rate / PERCENT) / MONTHS_IN_YEAR;
-        int totalMonths = (period * MONTHS_IN_YEAR);
+        float monthIR = (annulInterest / PERCENT) / MONTHS_IN_YEAR;
+        int totalMonths = (years * MONTHS_IN_YEAR);
         double method1 = monthIR * (Math.pow((1 + monthIR), totalMonths));
         double method2 = (Math.pow((1 + monthIR), totalMonths) - 1);
         //result
         double result = principle * (method1 / method2);
-        //printout
-        System.out.println("Monthly Payment: " + currency.format(result));
+        printResult(result, principle,monthIR,totalMonths);
+    }
 
+    private static double readNumber(
+            String prompt,
+            double min,
+            double max
+
+    ){
+        Scanner scanner = new Scanner(System.in);
+        double value;
+        while (true) {
+
+            System.out.print(prompt);
+            value = scanner.nextDouble();
+            if(value > min && value <= max) break;
+            System.out.println("Enter a value between " + min + " and " + max);
+        }
+        return value;
+    }
+
+    private static void printResult(
+            double result,
+            int principle,
+            float monthlyInterestRate,
+            int numberOfPayments
+    ){
+
+        System.out.println("MORTGAGE");
+        System.out.println("--------");
+        System.out.println("Monthly Payments : " +
+                NumberFormat.getCurrencyInstance().format(result));
+
+        System.out.println();
+        System.out.println("PAYMENT SCHEDULE");
+        System.out.println("----------------");
+
+        for (int currentPaymentNumber = 0; currentPaymentNumber <= numberOfPayments; currentPaymentNumber++) {
+            printRemainingBalance(principle, monthlyInterestRate, numberOfPayments,currentPaymentNumber);
+        }
+
+    }
+
+    private static void printRemainingBalance(
+            int principle,
+            float monthlyInterestRate,
+            int numberOfPayments,
+            int currentPaymentNumber
+    ) {
+        // calculate payment schedule https://www.mtgprofessor.com/formulas.htm
+        double method1 = (Math.pow((1 + monthlyInterestRate), numberOfPayments)) - Math.pow((1 + monthlyInterestRate), currentPaymentNumber);
+        double method2 = (Math.pow((1 + monthlyInterestRate), numberOfPayments)) -1;
+        double result = principle * (method1/method2);
+        System.out.println((NumberFormat.getCurrencyInstance().format(result)));
     }
 
 
@@ -77,14 +108,11 @@ public class Main {
 
         if ((number % 3 == 0) && (number % 5 == 0)) {
             System.out.println("FizzBuzz");
-        }
-        else if (number % 3 == 0){
+        } else if (number % 3 == 0) {
             System.out.println("Buzz");
-        }
-        else if(number % 5 == 0){
+        } else if (number % 5 == 0) {
             System.out.println("Fizz");
-        }
-        else System.out.println(number);
+        } else System.out.println(number);
 
     }
 
