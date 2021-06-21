@@ -1,7 +1,5 @@
 package com.dbtechprojects;
 
-import java.text.NumberFormat;
-
 public class MortgageModel {
     final static byte MONTHS_IN_YEAR = 12;
     final static byte PERCENT = 100;
@@ -25,12 +23,11 @@ public class MortgageModel {
     }
 
     // calculate payment schedule https://www.mtgprofessor.com/formulas.htm
-    public static String calculateRemainingBalance(MortgageModel mortgageModel, int currentPaymentNumber) {
+    public static double calculateRemainingBalance(MortgageModel mortgageModel, int currentPaymentNumber) {
         double method1 = (Math.pow((1 + mortgageModel.getMonthlyInterest()), mortgageModel.getTotalMonths())) -
                 Math.pow((1 + mortgageModel.getMonthlyInterest()), currentPaymentNumber);
         double method2 = (Math.pow((1 + mortgageModel.getMonthlyInterest()), mortgageModel.getTotalMonths())) - 1;
-        double result = mortgageModel.getPrinciple() * (method1 / method2);
-        return NumberFormat.getCurrencyInstance().format(result);
+        return mortgageModel.getPrinciple() * (method1 / method2);
     }
 
     public MortgageModel(int principle, float annualInterest, int mortgageLength) {
@@ -48,14 +45,6 @@ public class MortgageModel {
 
     private void setPrinciple(int principle) {
         this.principle = principle;
-    }
-
-    public float getAnnualInterest() {
-        return annualInterest;
-    }
-
-    public int getMortgageLength() {
-        return mortgageLength;
     }
 
     private void setMortgageLength(int mortgageLength) {

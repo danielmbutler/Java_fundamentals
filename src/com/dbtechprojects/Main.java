@@ -1,11 +1,8 @@
 package com.dbtechprojects;
 
-import java.text.NumberFormat;
-import java.util.Scanner;
-
 
 import static com.dbtechprojects.MortgageModel.calculateMortgage;
-import static com.dbtechprojects.MortgageUtils.readNumber;
+import static com.dbtechprojects.Console.readNumber;
 
 public class Main {
 
@@ -19,7 +16,7 @@ public class Main {
 
         // calculate mortgage
         var result = calculateMortgage(mortgage);
-        MortgageUtils.printResult(result, mortgage);
+        Console.printResult(result, mortgage);
 
 
     }

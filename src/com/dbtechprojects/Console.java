@@ -3,7 +3,10 @@ package com.dbtechprojects;
 import java.text.NumberFormat;
 import java.util.Scanner;
 
-public class MortgageUtils {
+public class Console {
+
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
 
 
     public static double readNumber(
@@ -12,7 +15,6 @@ public class MortgageUtils {
             double max
 
     ){
-        Scanner scanner = new Scanner(System.in);
         double value;
         while (true) {
 
@@ -32,14 +34,15 @@ public class MortgageUtils {
         System.out.println("MORTGAGE");
         System.out.println("--------");
         System.out.println("Monthly Payments : " +
-                NumberFormat.getCurrencyInstance().format(result));
+                currencyInstance.format(result));
 
         System.out.println();
         System.out.println("PAYMENT SCHEDULE");
         System.out.println("----------------");
 
         for (int currentPaymentNumber = 0; currentPaymentNumber <= mortgageModel.getTotalMonths(); currentPaymentNumber++) {
-            System.out.println((MortgageModel.calculateRemainingBalance(mortgageModel, currentPaymentNumber)));
+            var output = MortgageModel.calculateRemainingBalance(mortgageModel, currentPaymentNumber);
+            System.out.println((currencyInstance.format(output)));
         }
 
     }
